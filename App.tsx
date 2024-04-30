@@ -6,36 +6,51 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  useColorScheme,
-} from 'react-native';
+import HomeScreen from './screens/HomeScreen';
+import ExpensesListScreen from './screens/ExpensesListScreen';
+import AddNewExpenseScreen from './screens/AddNewExpenseScreen';
+import ExpenseStatsScreen from './screens/ExpenseStatsScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import MaterialCommunityIcons  from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-
+const Tab = createBottomTabNavigator();
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator 
+        initialRouteName='Home'
+        screenOptions={ ({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
+            let iconName;
+
+            if (route.name === 'Expenses List') {
+              iconName = 'view-list';
+            } else if (route.name === 'Add Expense') {
+              iconName = 'bank-plus';
+            } else if (route.name === 'Expense Stats') {
+              iconName = 'chart-pie';
+            } else {
+              iconName = 'home'
+            }
+            return <MaterialCommunityIcons name={iconName} size={size} color={color}/>;  
+          }
+        })
+        }
+      >
+        <Tab.Screen 
+          name="Home" 
+          component={HomeScreen} 
+        />
+        <Tab.Screen 
+          name="Expenses List" 
+          component={ExpensesListScreen}
+        />
+        <Tab.Screen name="Add Expense" component={AddNewExpenseScreen}/>
+        <Tab.Screen name="Expense Stats" component={ExpenseStatsScreen}/>
+      </Tab.Navigator>  
+    </NavigationContainer>
   );
 }
 
