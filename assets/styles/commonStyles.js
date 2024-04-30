@@ -16,6 +16,12 @@ const CommonStyles = StyleSheet.create({
       fontWeight: '700',
       marginTop: 10,
       marginBottom: 10,
+    },
+    textInput: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      borderRadius: 8,
     }
 });
 
