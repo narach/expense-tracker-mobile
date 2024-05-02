@@ -1,13 +1,50 @@
 import React, {useState} from 'react';
-import {Button, Text, TextInput, View} from 'react-native';
+import {Button, Text, TextInput, View, StyleSheet} from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const CommonStyles = require('../assets/styles/commonStyles');
+
+const styles = StyleSheet.create({
+  form: {
+    flex: 1,
+    backgroundColor: '#E8DAEF',
+    marginTop: 8,
+    marginLeft: 5,
+    marginRight: 5,
+    alignSelf: 'stretch',
+  },
+  buttonView: {
+    marginTop: 15,
+    marginBottom: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40,
+  },
+  categoryInput: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#E8DAEF',
+  },
+});
 
 function AddNewExpenseScreen() {
   const [title, onChangeTitle] = useState('');
   const [amount, onChangeAmount] = useState(0);
-  const [category, onChangeCategory] = useState('');
   const [expenseDate, onChangeExpenseDate] = useState('');
+
+  const [items, setItems] = useState([
+    {label: 'Food', value: 'Food'},
+    {label: 'Medicine', value: 'Medicine'},
+    {label: 'Motorcycles', value: 'Motorcycles'},
+    {label: 'Pets', value: 'Pets'},
+    {label: 'Entertinement', value: 'Entertinement'},
+    {label: 'Restaurants', value: 'Restaurants'},
+    {label: 'Other', value: 'Other'},
+  ]);
+  const [category, setCategory] = useState('');
+  const [open, setOpen] = useState(false);
 
   async function uploadExpense(newExpense) {
     const addExpenseUrl =
@@ -32,8 +69,8 @@ function AddNewExpenseScreen() {
   function resetInputs() {
     onChangeTitle('');
     onChangeAmount('');
-    onChangeCategory('');
     onChangeExpenseDate('');
+    setCategory('');
   }
 
   function saveExpense() {
@@ -49,7 +86,7 @@ function AddNewExpenseScreen() {
   }
 
   return (
-    <View style={CommonStyles.container}>
+    <View style={styles.form}>
       <Text style={CommonStyles.textLabel}>Add New Expense Form</Text>
       <TextInput
         style={CommonStyles.textInput}
@@ -65,18 +102,41 @@ function AddNewExpenseScreen() {
         onChangeText={onChangeAmount}
       />
       <TextInput
-        style={CommonStyles.textInput}
-        placeholder="Category"
-        value={category}
-        onChangeText={onChangeCategory}
-      />
-      <TextInput
-        style={CommonStyles.textInput}
+        style={styles.categoryInput}
         placeholder="Expense Date"
         value={expenseDate}
         onChangeText={onChangeExpenseDate}
       />
-      <Button onPress={saveExpense} title="Add Expense" />
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 12,
+          alignContent: 'stretch',
+        }}>
+        <DropDownPicker
+          open={open}
+          value={category}
+          items={items}
+          setOpen={setOpen}
+          setValue={setCategory}
+          setItems={setItems}
+          style={{
+            backgroundColor: '#E8DAEF',
+            borderWidth: 1,
+            borderRadius: 8,
+          }}
+          dropDownContainerStyle={{
+            display: 'flex',
+            backgroundColor: '#dfdfdf',
+            marginTop: 5,
+            minHeight: 300,
+          }}
+        />
+      </View>
+
+      <View style={styles.buttonView}>
+        <Button onPress={saveExpense} title="Add Expense" color="#f194ff" />
+      </View>
     </View>
   );
 }
