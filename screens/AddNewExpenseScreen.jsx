@@ -1,5 +1,14 @@
-import React, {useState} from 'react';
-import {Button, Text, TextInput, View, StyleSheet} from 'react-native';
+import moment from 'moment';
+import React, {useState, useRef} from 'react';
+import {
+  Button,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 const CommonStyles = require('../assets/styles/commonStyles');
@@ -30,10 +39,6 @@ const styles = StyleSheet.create({
 });
 
 function AddNewExpenseScreen() {
-  const [title, onChangeTitle] = useState('');
-  const [amount, onChangeAmount] = useState(0);
-  const [expenseDate, onChangeExpenseDate] = useState('');
-
   const [items, setItems] = useState([
     {label: 'Food', value: 'Food'},
     {label: 'Medicine', value: 'Medicine'},
@@ -43,8 +48,14 @@ function AddNewExpenseScreen() {
     {label: 'Restaurants', value: 'Restaurants'},
     {label: 'Other', value: 'Other'},
   ]);
+
+  const [title, onChangeTitle] = useState('');
+  const [amount, onChangeAmount] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [expenseDate, setExpenseDate] = useState(formatDate(selectedDate));
   const [category, setCategory] = useState('');
-  const [open, setOpen] = useState(false);
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   async function uploadExpense(newExpense) {
     const addExpenseUrl =
@@ -69,8 +80,12 @@ function AddNewExpenseScreen() {
   function resetInputs() {
     onChangeTitle('');
     onChangeAmount('');
-    onChangeExpenseDate('');
+    setExpenseDate('');
     setCategory('');
+  }
+
+  function formatDate(selDate) {
+    return moment(selDate).format('DD-MM-YYYY');
   }
 
   function saveExpense() {
@@ -101,11 +116,31 @@ function AddNewExpenseScreen() {
         value={amount}
         onChangeText={onChangeAmount}
       />
-      <TextInput
-        style={styles.categoryInput}
-        placeholder="Expense Date"
-        value={expenseDate}
-        onChangeText={onChangeExpenseDate}
+      <TouchableOpacity
+        onPress={() => {
+          setDatePickerOpen(true);
+        }}>
+        <TextInput
+          style={CommonStyles.textInput}
+          placeholder="Expense Date"
+          editable={false}
+          value={expenseDate}
+        />
+      </TouchableOpacity>
+      <DatePicker
+        date={selectedDate}
+        mode="date"
+        locale="en"
+        modal
+        open={datePickerOpen}
+        onConfirm={selDate => {
+          setDatePickerOpen(false);
+          setSelectedDate(selDate);
+          setExpenseDate(formatDate(selDate));
+        }}
+        onCancel={() => {
+          setDatePickerOpen(false);
+        }}
       />
       <View
         style={{
@@ -114,10 +149,10 @@ function AddNewExpenseScreen() {
           alignContent: 'stretch',
         }}>
         <DropDownPicker
-          open={open}
+          open={categoryOpen}
           value={category}
           items={items}
-          setOpen={setOpen}
+          setOpen={setCategoryOpen}
           setValue={setCategory}
           setItems={setItems}
           style={{
