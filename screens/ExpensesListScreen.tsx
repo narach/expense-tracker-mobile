@@ -1,25 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator} from 'react-native';
 import ExpenseList from '../components/ExpenseList';
-
-type Expense = {
-  ID: string;
-  Title: String;
-  Amount: number;
-  Category: string;
-  ExpenseDate: string;
-};
+import {Expense} from '../types/ExpensePayload';
+import {fetchExpenses} from '../helpers/httpHelper';
 
 function ExpensesListScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [expenseData, setExpenseData] = useState<Expense[]>([]);
 
   const getExpenses = async () => {
+    setIsLoading(true);
     try {
-      const url =
-        'https://mhws13jdg5.execute-api.eu-central-1.amazonaws.com/dev/expenses-tracker';
-      const response = await fetch(url);
-      const responseData = await response.json();
+      const responseData = await fetchExpenses();
+      console.log('Expenses List: ', responseData);
       setExpenseData(responseData);
     } catch (error) {
       console.error(error);

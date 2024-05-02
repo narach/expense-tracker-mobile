@@ -1,42 +1,12 @@
-import moment from 'moment';
-import React, {useState, useRef} from 'react';
-import {
-  Button,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useState} from 'react';
+import {Button, Text, TextInput, View, TouchableOpacity} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {uploadExpense} from '../helpers/httpHelper';
+import {formatDate} from '../helpers/formatHelpers';
+import {ExpensePayload} from '../types/ExpensePayload';
 
 const CommonStyles = require('../assets/styles/commonStyles');
-
-const styles = StyleSheet.create({
-  form: {
-    flex: 1,
-    backgroundColor: '#E8DAEF',
-    marginTop: 8,
-    marginLeft: 5,
-    marginRight: 5,
-    alignSelf: 'stretch',
-  },
-  buttonView: {
-    marginTop: 15,
-    marginBottom: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
-  },
-  categoryInput: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: '#E8DAEF',
-  },
-});
 
 function AddNewExpenseScreen() {
   const [items, setItems] = useState([
@@ -50,46 +20,23 @@ function AddNewExpenseScreen() {
   ]);
 
   const [title, onChangeTitle] = useState('');
-  const [amount, onChangeAmount] = useState(0);
+  const [amount, onChangeAmount] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [expenseDate, setExpenseDate] = useState(formatDate(selectedDate));
   const [category, setCategory] = useState('');
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
 
-  async function uploadExpense(newExpense) {
-    const addExpenseUrl =
-      'https://mhws13jdg5.execute-api.eu-central-1.amazonaws.com/dev/expenses-tracker';
-    const response = await fetch(addExpenseUrl, {
-      method: 'POST',
-      body: JSON.stringify(newExpense),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const resData = await response.json();
-
-    if (!response.ok) {
-      throw new Error('Failed to create a new expense');
-    }
-
-    console.log('Response: ', resData.message);
-  }
-
   function resetInputs() {
     onChangeTitle('');
     onChangeAmount('');
-    setExpenseDate('');
+    setSelectedDate(new Date());
+    setExpenseDate(formatDate(selectedDate));
     setCategory('');
   }
 
-  function formatDate(selDate) {
-    return moment(selDate).format('DD-MM-YYYY');
-  }
-
   function saveExpense() {
-    const newExpense = {
+    const newExpense: ExpensePayload = {
       Title: title,
       Amount: parseFloat(amount),
       Category: category,
@@ -101,7 +48,7 @@ function AddNewExpenseScreen() {
   }
 
   return (
-    <View style={styles.form}>
+    <View style={CommonStyles.form}>
       <Text style={CommonStyles.textLabel}>Add New Expense Form</Text>
       <TextInput
         style={CommonStyles.textInput}
@@ -120,12 +67,10 @@ function AddNewExpenseScreen() {
         onPress={() => {
           setDatePickerOpen(true);
         }}>
-        <TextInput
-          style={CommonStyles.textInput}
-          placeholder="Expense Date"
-          editable={false}
-          value={expenseDate}
-        />
+        <View style={CommonStyles.datePickerContainer}>
+          <Text>Expense date: </Text>
+          <Text>{expenseDate}</Text>
+        </View>
       </TouchableOpacity>
       <DatePicker
         date={selectedDate}
@@ -142,12 +87,7 @@ function AddNewExpenseScreen() {
           setDatePickerOpen(false);
         }}
       />
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: 12,
-          alignContent: 'stretch',
-        }}>
+      <View style={CommonStyles.dropDownContainer}>
         <DropDownPicker
           open={categoryOpen}
           value={category}
@@ -155,21 +95,12 @@ function AddNewExpenseScreen() {
           setOpen={setCategoryOpen}
           setValue={setCategory}
           setItems={setItems}
-          style={{
-            backgroundColor: '#E8DAEF',
-            borderWidth: 1,
-            borderRadius: 8,
-          }}
-          dropDownContainerStyle={{
-            display: 'flex',
-            backgroundColor: '#dfdfdf',
-            marginTop: 5,
-            minHeight: 300,
-          }}
+          style={CommonStyles.categoryItem}
+          dropDownContainerStyle={CommonStyles.categoryDropdown}
         />
       </View>
 
-      <View style={styles.buttonView}>
+      <View style={CommonStyles.buttonView}>
         <Button onPress={saveExpense} title="Add Expense" color="#f194ff" />
       </View>
     </View>
