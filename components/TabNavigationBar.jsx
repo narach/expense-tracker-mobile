@@ -5,6 +5,7 @@ import ExpenseStatsScreen from '../screens/ExpenseStatsScreen';
 
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ExpenseChartScreen from '../screens/ExpenseChartScreen';
 
 const TabNavigationBar = () => {
   const Tab = createMaterialBottomTabNavigator();
@@ -49,7 +50,8 @@ const TabNavigationBar = () => {
       />
       <Tab.Screen
         name="Expense Stats"
-        component={ExpenseStatsScreen}
+        // component={ExpenseStatsScreen}
+        component={ExpenseChartScreen}
         options={{
           tabBarLabel: 'Statistics',
           tabBarIcon: ({color}) => (

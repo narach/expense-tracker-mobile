@@ -124,6 +124,11 @@ const CommonStyles = StyleSheet.create({
   expenseListContainer: {
     flex: 1,
   },
+  chartContainer: {
+    margin: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 module.exports = CommonStyles;

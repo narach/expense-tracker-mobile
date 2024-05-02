@@ -1,3 +1,5 @@
+import Colors from '../assets/styles/colors';
+import {CategoryData} from '../types/CategoryData';
 import type {Expense, ExpensePayload} from '../types/ExpensePayload';
 
 export async function uploadExpense(newExpense: ExpensePayload) {
@@ -31,4 +33,32 @@ export async function fetchExpenses(): Promise<Expense[]> {
     throw new Error('Unable to fetch expenses data');
   }
   return responseData;
+}
+
+export async function fetchExpensesSpread(): Promise<CategoryData[]> {
+  const url =
+    'https://mhws13jdg5.execute-api.eu-central-1.amazonaws.com/dev/expenses-tracker/statistics';
+
+  const response = await fetch(url);
+  const responseData = await response.json();
+  const categories = Object.keys(responseData);
+  let categoryData: CategoryData[] = [];
+  categories.forEach((category, index) => {
+    const valueSpend = responseData[category].toFixed(2);
+    const categoryInfo: CategoryData = {
+      text: valueSpend,
+      value: +valueSpend,
+      label: category,
+      color: getRandomColor(),
+      percentage: '',
+    };
+    categoryData.push(categoryInfo);
+  });
+  console.log('Categories data: ', categoryData);
+  return categoryData;
+}
+
+function getRandomColor(): string {
+  const color = Colors[Math.floor(Math.random() * Colors.length)];
+  return color;
 }
