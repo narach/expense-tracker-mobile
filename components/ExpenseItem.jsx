@@ -1,39 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import {View, Text} from 'react-native';
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: 20,
-    },
-    item: {
-        backgroundColor: '#82E0AA',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-        flexDirection:'row'
-    },
-    title: {
-        fontSize: 14,
-    },
-    title2:{
-        fontSize:12 , marginLeft:10
-    }
-});
+const CommonStyles = require('../assets/styles/commonStyles');
 
 const ExpenseItem = ({expenseItem}) => {
-    return (
-        <View style={styles.item}>
-            <View>
-                <Text style={styles.title}>{expenseItem.Title}</Text>
-            </View>
-            <View>
-                <Text style={styles.title}>{expenseItem.Amount}</Text>
-                <Text style={styles.title}>{expenseItem.Category}</Text>
-                <Text style={styles.title}>{expenseItem.ExpenseDate}</Text>
-            </View>
-        </View>
-    );
-}
+  return (
+    <View style={CommonStyles.expensesContainer}>
+      <View style={CommonStyles.expensesItem}>
+        <Text style={CommonStyles.expenseTitle}>{expenseItem.Title}</Text>
+        <Text style={CommonStyles.expenseAmount}>{expenseItem.Amount} €</Text>
+      </View>
+      <View style={CommonStyles.expenseDetailsContainer}>
+        <Text style={CommonStyles.expenseCategory}>
+          Category: <Text>{expenseItem.Category}</Text>
+        </Text>
+        <Text style={CommonStyles.expenseDate}>
+          Expense date: <Text>{expenseItem.ExpenseDate}</Text>
+        </Text>
+      </View>
+    </View>
+  );
+};
 
 export default ExpenseItem;
