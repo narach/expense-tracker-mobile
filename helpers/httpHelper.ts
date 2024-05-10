@@ -1,6 +1,7 @@
 import Colors from '../assets/styles/colors';
 import {CategoryData} from '../types/CategoryData';
 import type {Expense, ExpensePayload} from '../types/ExpensePayload';
+import { formatUnixTime } from './formatHelpers';
 
 export async function uploadExpense(newExpense: ExpensePayload) {
   const addExpenseUrl =
@@ -28,7 +29,18 @@ export async function fetchExpenses(): Promise<Expense[]> {
     const url =
       'https://mhws13jdg5.execute-api.eu-central-1.amazonaws.com/dev/expenses-tracker';
     const response = await fetch(url);
-    responseData = await response.json();
+    const responseDataRaw = await response.json();
+    responseData = responseDataRaw.map( (expenseRaw: Expense) => {
+      const expenseItem: Expense = {
+        ID: expenseRaw.ID, 
+        Title: expenseRaw.Title, 
+        Amount: expenseRaw.Amount, 
+        Category: expenseRaw.Category, 
+        ExpenseDate: formatUnixTime(expenseRaw.ExpenseDateLong),
+        ExpenseDateLong: expenseRaw.ExpenseDateLong,
+      }
+      return expenseItem;
+    })
   } catch (error) {
     throw new Error('Unable to fetch expenses data');
   }

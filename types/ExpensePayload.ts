@@ -3,6 +3,7 @@ export type ExpensePayload = {
   Amount: number;
   Category: string;
   ExpenseDate: string;
+  ExpenseDateLong: number;
 };
 
 export type Expense = {
@@ -11,4 +12,5 @@ export type Expense = {
   Amount: number;
   Category: string;
   ExpenseDate: string;
+  ExpenseDateLong: number;
 };

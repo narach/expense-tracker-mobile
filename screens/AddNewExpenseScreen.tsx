@@ -5,6 +5,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {uploadExpense} from '../helpers/httpHelper';
 import {formatDate} from '../helpers/formatHelpers';
 import {ExpensePayload} from '../types/ExpensePayload';
+import moment from 'moment';
 
 const CommonStyles = require('../assets/styles/commonStyles');
 
@@ -41,6 +42,7 @@ function AddNewExpenseScreen() {
       Amount: parseFloat(amount),
       Category: category,
       ExpenseDate: expenseDate,
+      ExpenseDateLong: +moment(selectedDate).format("x")
     };
     console.log(newExpense);
     uploadExpense(newExpense);
